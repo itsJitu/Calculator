@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./calculator.css";
 
 function calculator() {
   const [input, setInput] = useState("");
@@ -53,34 +54,47 @@ function calculator() {
 
   return (
     <>
-      <div>
-        <div>{input || "0"}</div>
+      <div className="container">
+        
 
-        <div>
+        <div className="calculator-box">
           {/* Number Buttons */}
-          <button onClick={() => handleClick("1")}>1</button>
-          <button onClick={() => handleClick("2")}>2</button>
-          <button onClick={() => handleClick("3")}>3</button>
-          <button onClick={() => handleClick("4")}>4</button>
-          <button onClick={() => handleClick("5")}>5</button>
-          <button onClick={() => handleClick("6")}>6</button>
-          <button onClick={() => handleClick("7")}>7</button>
-          <button onClick={() => handleClick("8")}>8</button>
-          <button onClick={() => handleClick("9")}>9</button>
-          <button onClick={() => handleClick("0")}>0</button>
-          {/* <button onClick={() => handleClick(".")}>.</button> */}
+          <div style={{color: "black", padding: "0px 10px", fontSize: "30px", backgroundColor: "white", height: "200px", width: "150px"}}>{input || "0"}</div>
+          <div className="first-four">
+            <button onClick={handleBackspace}>C</button>
+            <button onClick={() => handleClick("%")}>%</button>
+            <button onClick={() => handleClick("/")}>/</button>
+            <button onClick={() => handleClick("*")}>*</button>
+          </div>
 
-          {/* Operator Buttons */}
-          <button onClick={() => handleClick("+")}>+</button>
-          <button onClick={() => handleClick("-")}>-</button>
-          <button onClick={() => handleClick("*")}>*</button>
-          <button onClick={() => handleClick("/")}>/</button>
-          <button onClick={() => handleClick("%")}>%</button>
+          <div>
+            <button onClick={() => handleClick("7")}>7</button>
+            <button onClick={() => handleClick("8")}>8</button>
+            <button onClick={() => handleClick("9")}>9</button>
+            <button onClick={() => handleClick("-")}>-</button>
+          </div>
 
-          {/* equal button */}
-          <button onClick={handleEqual}>=</button>
-          <button onClick={handleBackspace}>⌫</button>
-          <button onClick={handleClear}>clr</button>
+          <div>
+            <button onClick={() => handleClick("4")}>4</button>
+            <button onClick={() => handleClick("5")}>5</button>
+            <button onClick={() => handleClick("6")}>6</button>
+            <button onClick={() => handleClick("+")}>+</button>
+          </div>
+
+          <div>
+            <button onClick={() => handleClick("1")}>1</button>
+            <button onClick={() => handleClick("2")}>2</button>
+            <button onClick={() => handleClick("3")}>3</button>
+            <button onClick={handleEqual}>=</button>
+          </div>
+
+          <div>
+            
+            <button onClick={() => handleClick(".")}>.</button>
+            <button onClick={() => handleClick("0")}>0</button>
+            <button onClick={handleClear}>AC</button>
+          </div>
+        
         </div>
       </div>
     </>

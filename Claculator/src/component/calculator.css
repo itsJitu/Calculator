@@ -1,0 +1,23 @@
+.container {
+    border: 1px solid rgb(122 122 22);
+    padding: 100px;
+    margin: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(217, 217, 217);
+    border-radius: 10px;
+}
+
+.calculator-box{
+    width: auto;
+    height: auto;
+    border: 1px solid gray;
+}
+
+.first-four {
+    gap: 8px;
+    margin-top: 5px;
+
+}
+
