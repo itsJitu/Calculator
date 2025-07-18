@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./calculator.css";
 
-function calculator() {
+function Calculator() {
   const [input, setInput] = useState("");
 
   const handleClick = (value) => {
@@ -10,17 +10,50 @@ function calculator() {
 
   const handleEqual = () => {
     try {
+      console.log("Input:", input);
+      
+      // Check if input is empty or doesn't contain any numbers
+      if (!input || !/\d/.test(input)) {
+        console.log("Empty input, setting to 0");
+        setInput("0");
+        return;
+      }
+
       let expression = input;
+      console.log("Original expression:", expression);
+      
+      // Handle percentage calculations
+      // Convert 100%50 to 50 (100% of 50 = 50)
       expression = expression.replace(
-        /(\d+(?:\.\d+)?)\s*%\s*(\d+(?:\.\d+)?)/g,
-        (_, a, b) => {
-          return `(${a} * (${b} / 100))`;
-        }
+        /(\d+(?:\.\d+)?)%(\d+(?:\.\d+)?)/g,
+        (_, a, b) => `(${a} * ${b} / 100)`
+      );
+      
+      // Convert 50% to 0.5 (50/100) - for single percentages
+      expression = expression.replace(
+        /(\d+(?:\.\d+)?)%/g,
+        (_, a) => `(${a} / 100)`
       );
 
+      // Ensure the expression ends with a number, not an operator
+      if (/[\+\-\*\/]$/.test(expression)) {
+        expression = expression.slice(0, -1);
+      }
+
+      console.log("Final expression:", expression);
       const result = eval(expression);
-      setInput(result.toString());
+      console.log("Result:", result);
+      
+      // Check if result is valid
+      if (isNaN(result) || !isFinite(result)) {
+        console.log("Invalid result, setting Error");
+        setInput("Error");
+      } else {
+        console.log("Setting result:", result.toString());
+        setInput(result.toString());
+      }
     } catch (error) {
+      console.log("Error:", error);
       setInput("Error");
     }
   };
@@ -50,7 +83,7 @@ function calculator() {
 
     window.addEventListener("keydown", handlekeyDown);
     return () => window.removeEventListener("keydown", handlekeyDown);
-  }, []);
+  }, [handleEqual, handleBackspace, handleClear]);
 
   return (
     <>
@@ -62,7 +95,7 @@ function calculator() {
           <div style={{color: "black", padding: "0px 10px", fontSize: "30px", backgroundColor: "white", height: "200px", width: "150px"}}>{input || "0"}</div>
           
           <div className="first-four">
-            <button onClick={handleBackspace}>C</button>
+            <button onClick={handleBackspace} style={{backgroundColor: "rgb(97 179 59)",}}>C</button>
             <button onClick={() => handleClick("%")}>%</button>
             <button onClick={() => handleClick("/")}>/</button>
             <button onClick={() => handleClick("*")}>*</button>
@@ -89,11 +122,10 @@ function calculator() {
             <button onClick={handleEqual}>=</button>
           </div>
 
-          <div>
-            
+          <div className="last-three">
             <button onClick={() => handleClick(".")}>.</button>
             <button onClick={() => handleClick("0")}>0</button>
-            <button onClick={handleClear}>AC</button>
+            <button onClick={handleClear} style={{backgroundColor: "red"}}>AC</button>
           </div>
         
         </div>
@@ -102,4 +134,4 @@ function calculator() {
   );
 }
 
-export default calculator;
+export default Calculator;
