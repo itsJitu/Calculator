@@ -78,8 +78,8 @@ button {
   background-color: black;
   min-height: 120px;
   height: 100px;
-  width: 300px;        /* Fixed width, never increases */
-  max-width: 300px;    /* Prevents growing */
+  width: 250px;        /* Fixed width, never increases */
+  max-width: 250px;    /* Prevents growing */
   text-align: right;
   border-radius: 8px;
   margin-bottom: 20px;
