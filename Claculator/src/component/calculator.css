@@ -1,24 +1,47 @@
-.container {
-    border: 1px solid rgb(122 122 22);
-    padding: 40px;
-    margin: 60px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(217, 217, 217);
-    border-radius: 10px;
-    max-width: 400px;
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .calculator-box{
-    display: flex;
-    flex-direction: column;
     gap: 10px;
-    background-color: white;
+    background-color: black;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid gray;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.calculator-box button {
+  background: transparent;
+  color: #81BDFF;
+  border: 1.5px solid #ADD8FF;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  backdrop-filter: blur(2px);
+}
+
+.calculator-box button:hover {
+  background: rgba(173, 216, 255, 0.15);
+  color: #007bff;
+}
+
+.arith-btn {
+  background: linear-gradient(90deg, #ADD8FF 0%, #007bff 100%);
+  color: #222;
+}
+
+.arith-btn:hover {
+  background: linear-gradient(90deg, #007bff 0%, #ADD8FF 100%);
+  color: #fff;
 }
 
 
@@ -46,6 +69,42 @@ button {
     margin: 5px;
     display: flex;
     justify-content: space-between;
+}
+
+.display-area {
+  color: white;
+  padding: 20px 10px;
+  font-size: 30px;
+  background-color: black;
+  min-height: 120px;
+  height: 100px;
+  width: 300px;        /* Fixed width, never increases */
+  max-width: 300px;    /* Prevents growing */
+  text-align: right;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  display: block;
+}
+
+.input-string {
+  font-size: 20px;
+  color: white;
+  word-break: break-word;
+  width: 100%;
+  text-align: right;
+}
+
+.result-string {
+  font-size: 28px;
+  color: #007Aff;
+  font-weight: bold;
+  width: 100%;
+  text-align: right;
+  margin-top: 8px;
 }
 
 
