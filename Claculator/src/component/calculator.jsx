@@ -83,14 +83,16 @@ function Calculator() {
 
   useEffect(() => {
     const handlekeyDown = (event) => {
-      const { key } = event;
-      if (/^[0-9+\-*/.%]$/.test(key)) {
+      const { key, code, shiftKey } = event;
+      // Support % via Shift+5 as well as direct % key
+      if (/^[0-9+\-*/.%]$/.test(key) || (code === 'Digit5' && shiftKey)) {
+        const value = (code === 'Digit5' && shiftKey) ? '%' : key;
         if (isResult) {
-          setInput(key);
+          setInput(value);
           setResult("");
           setIsResult(false);
         } else {
-          setInput((prev) => prev + key);
+          setInput((prev) => prev + value);
         }
       } else if (key === "Enter" || key === "=") {
         // Always evaluate current input, regardless of isResult
