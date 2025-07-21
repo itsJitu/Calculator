@@ -6,6 +6,7 @@ function Calculator() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [isResult, setIsResult] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const inputRef = useRef(null);
 
   const handleClick = (value) => {
@@ -106,13 +107,24 @@ function Calculator() {
     }
   }, [input]);
 
+  // Calculate dynamic font size for input
+  const getInputFontSize = () => {
+    const baseSize = 20;
+    if (input.length < 20) return baseSize;
+    if (input.length < 30) return 18;
+    if (input.length < 40) return 16;
+    if (input.length < 50) return 14;
+    if (input.length < 60) return 12;
+    return 10;
+  };
+
   return (
     <>
       <div className="container">
         <div className="calculator-box">
           {/* Display both input and result */}
           <div className="display-area">
-            <div className="input-string" ref={inputRef}>{input || "0"}</div>
+            <div className="input-string" ref={inputRef} style={{ fontSize: getInputFontSize() }}>{input || "0"}</div>
             {result !== "" && (
               <div className="result-string">= {result}</div>
             )}
