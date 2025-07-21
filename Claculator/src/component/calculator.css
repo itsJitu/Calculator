@@ -88,6 +88,7 @@ button {
   overflow-wrap: break-word;
   overflow-y: auto;
   display: block;
+  overflow-x: hidden;
 }
 
 .input-string {
@@ -96,6 +97,11 @@ button {
   word-break: break-word;
   width: 100%;
   text-align: right;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+.input-string::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .result-string {

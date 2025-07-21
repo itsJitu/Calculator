@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./calculator.css";
+import Decimal from "decimal.js";
 
 function Calculator() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState("");
   const [isResult, setIsResult] = useState(false);
+  const inputRef = useRef(null);
 
   const handleClick = (value) => {
     if (isResult) {
@@ -19,8 +21,9 @@ function Calculator() {
   const handleEqual = () => {
     try {
       if (!input || !/\d/.test(input)) {
-        setResult("0");
+        setResult("Error");
         setIsResult(true);
+        // Do not clear input
         return;
       }
       let expression = input;
@@ -35,16 +38,25 @@ function Calculator() {
       if (/[\+\-\*\/]$/.test(expression)) {
         expression = expression.slice(0, -1);
       }
-      const evalResult = eval(expression);
-      if (isNaN(evalResult) || !isFinite(evalResult)) {
+      // Use Decimal.js for evaluation
+      let resultValue = computeWithDecimal(expression);
+      if (resultValue === null) {
         setResult("Error");
+        setIsResult(true);
+        // Do not clear input
+        return;
       } else {
-        setResult(evalResult.toString());
+        // Show full number, not scientific notation
+        let dec = new Decimal(resultValue);
+        let formatted = dec.isInteger() ? dec.toFixed(0) : dec.toString();
+        setResult(formatted);
+        setIsResult(true);
+        // Do not clear input
       }
-      setIsResult(true);
     } catch (error) {
       setResult("Error");
       setIsResult(true);
+      // Do not clear input
     }
   };
 
@@ -72,35 +84,8 @@ function Calculator() {
           setInput((prev) => prev + key);
         }
       } else if (key === "Enter" || key === "=") {
-        try {
-          if (!input || !/\d/.test(input)) {
-            setResult("0");
-            setIsResult(true);
-            return;
-          }
-          let expression = input;
-          expression = expression.replace(
-            /(\d+(?:\.\d+)?)%(\d+(?:\.\d+)?)/g,
-            (_, a, b) => `(${a} * ${b} / 100)`
-          );
-          expression = expression.replace(
-            /(\d+(?:\.\d+)?)%/g,
-            (_, a) => `(${a} / 100)`
-          );
-          if (/[\+\-\*\/]$/.test(expression)) {
-            expression = expression.slice(0, -1);
-          }
-          const evalResult = eval(expression);
-          if (isNaN(evalResult) || !isFinite(evalResult)) {
-            setResult("Error");
-          } else {
-            setResult(evalResult.toString());
-          }
-          setIsResult(true);
-        } catch (error) {
-          setResult("Error");
-          setIsResult(true);
-        }
+        // Always evaluate current input, regardless of isResult
+        handleEqual();
       } else if (key === "Backspace") {
         setInput((prev) => prev.slice(0, -1));
         setResult("");
@@ -115,13 +100,19 @@ function Calculator() {
     return () => window.removeEventListener("keydown", handlekeyDown);
   }, [input, isResult]);
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+    }
+  }, [input]);
+
   return (
     <>
       <div className="container">
         <div className="calculator-box">
           {/* Display both input and result */}
           <div className="display-area">
-            <div className="input-string">{input || "0"}</div>
+            <div className="input-string" ref={inputRef}>{input || "0"}</div>
             {result !== "" && (
               <div className="result-string">= {result}</div>
             )}
@@ -224,6 +215,58 @@ function Calculator() {
       </div>
     </>
   );
+}
+
+function computeWithDecimal(expr) {
+  try {
+    // Tokenize the expression (supports +, -, *, /, %, decimals, and parentheses)
+    let tokens = expr.match(/(\d*\.\d+|\d+|[+\-*/()])/g);
+    if (!tokens) return null;
+    // Shunting Yard Algorithm to convert to RPN
+    let output = [];
+    let ops = [];
+    const precedence = { '+': 1, '-': 1, '*': 2, '/': 2 };
+    for (let token of tokens) {
+      if (/^\d*\.\d+$|^\d+$/.test(token)) {
+        output.push(token);
+      } else if (token in precedence) {
+        while (
+          ops.length &&
+          precedence[ops[ops.length - 1]] >= precedence[token]
+        ) {
+          output.push(ops.pop());
+        }
+        ops.push(token);
+      } else if (token === '(') {
+        ops.push(token);
+      } else if (token === ')') {
+        while (ops.length && ops[ops.length - 1] !== '(') {
+          output.push(ops.pop());
+        }
+        ops.pop();
+      }
+    }
+    while (ops.length) output.push(ops.pop());
+    // Evaluate RPN with Decimal
+    let stack = [];
+    for (let token of output) {
+      if (/^\d*\.\d+$|^\d+$/.test(token)) {
+        stack.push(new Decimal(token));
+      } else {
+        let b = stack.pop();
+        let a = stack.pop();
+        if (token === '+') stack.push(a.plus(b));
+        else if (token === '-') stack.push(a.minus(b));
+        else if (token === '*') stack.push(a.times(b));
+        else if (token === '/') stack.push(a.div(b));
+      }
+    }
+    if (stack.length !== 1) return null;
+    // Remove unnecessary trailing zeros
+    return stack[0].toString();
+  } catch {
+    return null;
+  }
 }
 
 export default Calculator;
