@@ -94,10 +94,11 @@ button {
 .input-string {
   font-size: 20px;
   color: white;
-  word-break: break-word;
+  /* word-break: break-word; */
   width: 100%;
   text-align: right;
   overflow-x: hidden;
+  overflow-y: hidden;
   scrollbar-width: none; /* Firefox */
   height: 40px;
 }

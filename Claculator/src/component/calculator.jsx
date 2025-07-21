@@ -68,9 +68,17 @@ function Calculator() {
   };
 
   const handleBackspace = () => {
-    setInput((prev) => prev.slice(0, -1));
-    setResult("");
-    setIsResult(false);
+    setInput((prev) => {
+    const updated = prev.slice(0, -1);
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.scrollLeft = inputRef.current.scrollWidth;
+      }
+    }, 0); // Delay ensures DOM has updated
+    return updated;
+  });
+  setResult("");
+  setIsResult(false);
   };
 
   useEffect(() => {
